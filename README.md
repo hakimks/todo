@@ -1,16 +1,17 @@
 ## Introduction
 
-This is a simple Todo application built off Django (including the Django REST Framework for API CRUD operations) and React.
+This is a simple Todo application built off Django (including the Django REST Framework for API CRUD operations) and React forked from https://github.com/Jordanirabor/django-todo-react
+I have added an android application (in progress)
 
 ## Requirements
 * Python3
-* Pipenv
+* virtualenv
 
 ## Getting started
-1. Clone the project to your machine ```[git clone https://github.com/Jordanirabor/django-todo-react]```
-2. Navigate into the diretory ```[cd django-todo-react]```
-3. Source the virtual environment ```[pipenv shell]```
-4. Install the dependencies ```[pipenv install]```
+1. Clone the project to your machine 
+2. Navigate into the diretory 
+3. Create the virtual environment 
+4. Install the dependencies 
 5. Navigate into the frontend directory ```[cd frontend]```
 5. Install the dependencies ```[npm install]```
 
