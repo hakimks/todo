@@ -4,6 +4,7 @@ import android.os.Bundle;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
+import com.hakim.todo.models.Todo;
 import com.hakim.todo.services.ServiceBuilder;
 import com.hakim.todo.services.TodoService;
 
@@ -13,13 +14,21 @@ import androidx.appcompat.widget.Toolbar;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
+import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import android.widget.TextView;
 
+import java.util.List;
+
 public class MainActivity extends AppCompatActivity {
+    private static final String TAG = "MainActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,18 +37,39 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        TodoService taskService = ServiceBuilder.buildService(TodoService.class);
-        Call<String> call = taskService.getTodos();
+        final ListView listView = findViewById(R.id.todo_listview);
 
-        call.enqueue(new Callback<String>() {
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(ServiceBuilder.BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        TodoService todoService = retrofit.create(TodoService.class);
+        Call<List<Todo>> call = todoService.getTodos();
+
+        call.enqueue(new Callback<List<Todo>>() {
+
             @Override
-            public void onResponse(Call<String> call, Response<String> response) {
-                ((TextView) findViewById(R.id.todo_text)).setText("request successful");
+            public void onResponse(Call<List<Todo>> call, Response<List<Todo>> response) {
+                List<Todo> todos = response.body();
+                String[] todosTitles = new String[todos.size()];
+
+                for (int i = 0; i < todosTitles.length; i++){
+                    todosTitles[i] = todos.get(i).getTitle();
+                }
+
+                listView.setAdapter(
+                        new ArrayAdapter<String>(
+                                getApplicationContext(), android.R.layout.simple_list_item_1, todosTitles
+                        )
+                );
+
+
             }
 
             @Override
-            public void onFailure(Call<String> call, Throwable t) {
-                ((TextView) findViewById(R.id.todo_text)).setText("Request Failed");
+            public void onFailure(Call<List<Todo>> call, Throwable t) {
+                Log.d(TAG, "onFailure: " + t.getMessage());
+
 
             }
         });
