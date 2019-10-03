@@ -21,9 +21,11 @@ import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.List;
 
@@ -51,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<List<Todo>> call, Response<List<Todo>> response) {
                 List<Todo> todos = response.body();
-                String[] todosTitles = new String[todos.size()];
+                final String[] todosTitles = new String[todos.size()];
 
                 for (int i = 0; i < todosTitles.length; i++){
                     todosTitles[i] = todos.get(i).getTitle();
@@ -62,6 +64,15 @@ public class MainActivity extends AppCompatActivity {
                                 getApplicationContext(), android.R.layout.simple_list_item_1, todosTitles
                         )
                 );
+
+                listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                        Toast.makeText(getApplicationContext(), todosTitles[position], Toast.LENGTH_SHORT).show();
+
+                    }
+                });
 
 
             }
